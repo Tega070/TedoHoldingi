@@ -1,0 +1,932 @@
+<!--
+  Project: Tedo Holdingi (თედო ჰოლდინგი) — landing page
+  Stack: HTML / CSS / vanilla JS (single file)
+  Design direction: minimal
+  Mobile-first: YES
+-->
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>თედო ჰოლდინგი — კომპიუტერული და მობილური ტექნიკა</title>
+  <meta name="description" content="თედო ჰოლდინგი — კომპიუტერები, ლეპტოპები, მობილური ტელეფონები და აქსესუარები. გიორგი წაბაძის ქ. 7, თბილისი. +995 599 30 44 56">
+  <meta property="og:title" content="თედო ჰოლდინგი — ტექნიკის მაღაზია">
+  <meta property="og:description" content="კომპიუტერები, ლეპტოპები, ტელეფონები და აქსესუარები. თბილისი.">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ka_GE">
+  <meta property="og:image" content="og-image.jpg">
+  <meta name="theme-color" content="#0C2E20">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230C2E20'/%3E%3Cpath d='M9 10h14M16 10v13' stroke='%235FB57E' stroke-width='3.2' stroke-linecap='round'/%3E%3C/svg%3E">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ================= Tokens ================= */
+    :root {
+      /* primitives */
+      --green-300: #8FD1A5;
+      --green-400: #74C391;
+      --green-500: #5FB57E;   /* brand green */
+      --green-600: #4A9E69;
+      --green-700: #3A8457;
+      --green-800: #2B6B45;   /* green text on light bg (AA) */
+      --forest-900: #0C2E20;  /* deep green surfaces */
+      --forest-950: #081F16;
+      --forest-800: #12402D;
+      --mint-50:  #F2F8F4;
+      --mint-100: #E5F2E9;
+      --mint-200: #D3E8DA;
+      --ink: #0F241A;
+      --ink-soft: #46594E;
+      --white: #FFFFFF;
+
+      /* semantic */
+      --color-bg: var(--mint-50);
+      --color-surface: var(--white);
+      --color-text: var(--ink);
+      --color-muted: var(--ink-soft);
+      --color-accent: var(--green-500);
+      --color-accent-text: var(--green-800);
+      --color-border: var(--mint-200);
+      --color-dark: var(--forest-900);
+      --on-dark: #FFFFFF;
+      --on-dark-muted: rgba(255,255,255,0.72);
+
+      --font: "Noto Sans Georgian", "Sylfaen", system-ui, sans-serif;
+
+      --radius-sm: 8px;
+      --radius: 14px;
+      --radius-lg: 22px;
+      --shadow-sm: 0 1px 2px rgba(12,46,32,0.06), 0 2px 8px rgba(12,46,32,0.05);
+      --shadow: 0 2px 4px rgba(12,46,32,0.04), 0 12px 32px rgba(12,46,32,0.10);
+      --shadow-lg: 0 24px 64px rgba(8,31,22,0.28);
+      --ease: 250ms cubic-bezier(.2,.7,.3,1);
+      --max: 1200px;
+      --gutter: 16px;
+      --nav-h: 68px;
+
+      --z-menu: 20;
+      --z-nav: 30;
+      --z-fab: 40;
+    }
+
+    /* ================= Reset ================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; scroll-behavior: smooth; scroll-padding-top: var(--nav-h); }
+    body {
+      -webkit-font-smoothing: antialiased;
+      font-family: var(--font);
+      font-size: 1rem;
+      line-height: 1.7;
+      color: var(--color-text);
+      background: var(--color-bg);
+      overflow-x: hidden;
+    }
+    img, video, svg { display: block; }
+    img, video { max-width: 100%; height: auto; }
+    a { color: inherit; text-decoration: none; }
+    ul, ol { list-style: none; }
+    button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+    :focus-visible { outline: 2px solid var(--green-500); outline-offset: 3px; border-radius: 4px; }
+
+    .container { width: 100%; max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); }
+
+    /* Georgian words are long — let headings wrap safely at 320px */
+    h1, h2, h3 { font-weight: 700; line-height: 1.22; letter-spacing: -0.02em; overflow-wrap: break-word; }
+
+    .tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 0.875rem; font-weight: 600; color: var(--color-accent-text);
+    }
+    .tag::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--color-accent); box-shadow: 0 0 0 4px rgba(95,181,126,0.2); }
+
+    .section { padding: 80px 0; }
+    .section__head { margin-bottom: 40px; max-width: 640px; }
+    .section__head h2 { font-size: clamp(1.75rem, 6.5vw, 2.625rem); margin-top: 14px; }
+    .section__head p { margin-top: 14px; color: var(--color-muted); font-size: 1.0625rem; }
+
+    /* ================= Buttons ================= */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      min-height: 52px; padding: 0 26px; width: 100%;
+      font-weight: 600; font-size: 1rem; white-space: nowrap;
+      border-radius: 999px; border: 1.5px solid transparent;
+      transition: background-color var(--ease), color var(--ease), border-color var(--ease), box-shadow var(--ease);
+      cursor: pointer;
+    }
+    .btn svg { width: 18px; height: 18px; flex: none; transition: transform var(--ease); }
+    .btn:hover .arrow { transform: translateX(3px); }
+    .btn--green { background: var(--green-500); color: var(--forest-950); box-shadow: 0 8px 24px rgba(95,181,126,0.35); }
+    .btn--green:hover { background: var(--green-400); }
+    .btn--ghost { border-color: rgba(255,255,255,0.28); color: var(--white); }
+    .btn--ghost:hover { border-color: var(--green-400); background: rgba(95,181,126,0.12); }
+    .btn--dark { background: var(--forest-900); color: var(--white); }
+    .btn--dark:hover { background: var(--forest-800); }
+    .btn--outline { border-color: var(--forest-900); color: var(--forest-900); }
+    .btn--outline:hover { background: rgba(12,46,32,0.08); }
+
+    /* ================= Nav ================= */
+    .nav {
+      position: fixed; inset: 0 0 auto 0; z-index: var(--z-nav);
+      height: var(--nav-h); color: var(--white);
+      transition: background-color var(--ease), box-shadow var(--ease);
+    }
+    .nav.is-scrolled, .nav.is-open {
+      background: rgba(8,31,22,0.88);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.06);
+    }
+    .nav__inner { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .brand { display: flex; align-items: center; gap: 10px; min-height: 44px; font-weight: 800; font-size: 1.125rem; letter-spacing: -0.02em; }
+    .brand b { color: var(--green-400); font-weight: 800; }
+
+    .nav__links { display: none; }
+    .nav__toggle { width: 44px; height: 44px; display: grid; place-items: center; margin-right: -10px; border-radius: 10px; }
+    .nav__toggle svg { width: 24px; height: 24px; }
+    .nav__toggle .icon-close { display: none; }
+    .nav.is-open .icon-open { display: none; }
+    .nav.is-open .icon-close { display: block; }
+
+    .mobile-menu {
+      position: fixed; inset: var(--nav-h) 0 0 0; z-index: var(--z-menu);
+      background: var(--forest-950); color: var(--white);
+      padding: 24px var(--gutter) 40px;
+      display: flex; flex-direction: column;
+      opacity: 0; visibility: hidden; transform: translateY(-8px);
+      transition: opacity var(--ease), transform var(--ease), visibility var(--ease);
+    }
+    .nav.is-open + .mobile-menu { opacity: 1; visibility: visible; transform: none; }
+    .mobile-menu a:not(.btn) {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 1.375rem; font-weight: 700; padding: 18px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .mobile-menu a:not(.btn)::after { content: "→"; color: var(--green-400); font-weight: 400; }
+    .mobile-menu__foot { margin-top: auto; display: grid; gap: 12px; }
+    .mobile-menu__foot p { color: var(--on-dark-muted); font-size: 0.9375rem; text-align: center; }
+
+    /* ================= Hero ================= */
+    .hero {
+      position: relative; overflow: hidden;
+      background: var(--forest-900); color: var(--white);
+      padding: calc(var(--nav-h) + 40px) 0 120px;
+    }
+    .hero::before { /* grid pattern, fading out */
+      content: ""; position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.045) 1px, transparent 1px);
+      background-size: 56px 56px;
+      -webkit-mask-image: radial-gradient(ellipse 80% 70% at 70% 30%, #000 30%, transparent 80%);
+              mask-image: radial-gradient(ellipse 80% 70% at 70% 30%, #000 30%, transparent 80%);
+    }
+    .hero::after { /* green glow */
+      content: ""; position: absolute; width: 720px; height: 720px; right: -260px; top: -200px;
+      background: radial-gradient(circle, rgba(95,181,126,0.38), transparent 62%);
+      pointer-events: none;
+    }
+    .hero__grid { position: relative; z-index: 1; display: grid; gap: 48px; align-items: center; }
+
+    .pill {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 6px 14px 6px 8px; border-radius: 999px;
+      background: rgba(95,181,126,0.14); border: 1px solid rgba(95,181,126,0.32);
+      font-size: 0.875rem; font-weight: 500; color: var(--green-300);
+    }
+    .pill span { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; background: var(--green-500); color: var(--forest-950); }
+    .pill svg { width: 13px; height: 13px; }
+
+    .hero h1 { font-size: clamp(2.125rem, 9vw, 3.875rem); margin: 22px 0 18px; }
+    .hero h1 em { font-style: normal; color: var(--green-400); }
+    .hero__lead { font-size: 1.0625rem; color: var(--on-dark-muted); max-width: 48ch; }
+    .hero__actions { display: grid; gap: 12px; margin-top: 32px; }
+    .hero__meta { display: flex; flex-wrap: wrap; gap: 10px 24px; margin-top: 28px; font-size: 0.9375rem; color: var(--on-dark-muted); }
+    .hero__meta li { display: flex; align-items: center; gap: 8px; }
+    .hero__meta svg { width: 18px; height: 18px; color: var(--green-400); }
+
+    /* Illustration */
+    .visual { position: relative; max-width: 560px; width: 100%; margin: 0 auto; }
+    .visual svg.devices { width: 100%; height: auto; filter: drop-shadow(0 30px 50px rgba(0,0,0,0.35)); }
+    .float {
+      position: absolute; display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px 10px 10px; border-radius: 14px;
+      background: rgba(255,255,255,0.96); color: var(--ink);
+      box-shadow: var(--shadow-lg);
+      font-size: 0.8125rem; font-weight: 600; line-height: 1.3;
+      animation: bob 6s ease-in-out infinite;
+    }
+    .float small { display: block; font-weight: 500; color: var(--color-muted); font-size: 0.75rem; }
+    .float__icon { width: 34px; height: 34px; border-radius: 10px; flex: none; display: grid; place-items: center; background: var(--mint-100); color: var(--green-800); }
+    .float__icon svg { width: 18px; height: 18px; }
+    .float--a { left: -4px; top: 6%; }
+    .float--b { right: -4px; bottom: 4%; animation-delay: -3s; }
+    @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+    /* ================= Trust strip ================= */
+    .trust { position: relative; z-index: 2; margin-top: -72px; }
+    .trust__card {
+      display: grid; grid-template-columns: 1fr 1fr;
+      background: var(--color-surface); border-radius: var(--radius-lg);
+      box-shadow: var(--shadow); border: 1px solid var(--color-border);
+      overflow: hidden;
+    }
+    .trust__item { padding: 20px 16px; display: grid; gap: 10px; align-content: start; }
+    .trust__item:nth-child(odd) { border-right: 1px solid var(--color-border); }
+    .trust__item:nth-child(-n+2) { border-bottom: 1px solid var(--color-border); }
+    .trust__icon { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: var(--mint-100); color: var(--green-800); }
+    .trust__icon svg { width: 22px; height: 22px; }
+    .trust__item h3 { font-size: 0.9375rem; line-height: 1.35; letter-spacing: -0.01em; }
+    .trust__item p { font-size: 0.8125rem; color: var(--color-muted); line-height: 1.5; display: none; }
+
+    /* ================= About ================= */
+    .about__grid { display: grid; gap: 32px; }
+    .about__text p { color: var(--color-muted); font-size: 1.0625rem; }
+    .about__text p + p { margin-top: 16px; }
+    .about__text strong { color: var(--color-text); font-weight: 600; }
+    .facts {
+      background: linear-gradient(160deg, var(--forest-800), var(--forest-900));
+      color: var(--white); border-radius: var(--radius-lg); padding: 28px 24px;
+      position: relative; overflow: hidden;
+    }
+    .facts::after {
+      content: ""; position: absolute; right: -60px; bottom: -60px; width: 200px; height: 200px; border-radius: 50%;
+      border: 1px solid rgba(95,181,126,0.35); box-shadow: 0 0 0 26px rgba(95,181,126,0.06), 0 0 0 27px rgba(95,181,126,0.2);
+    }
+    .facts h3 { font-size: 1.125rem; margin-bottom: 8px; color: var(--green-300); }
+    .facts li { display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.1); position: relative; z-index: 1; }
+    .facts li:last-child { border-bottom: 0; }
+    .facts svg { width: 22px; height: 22px; color: var(--green-400); flex: none; margin-top: 2px; }
+    .facts small { display: block; color: var(--on-dark-muted); font-size: 0.8125rem; }
+    .facts span { font-weight: 600; }
+
+    /* ================= Products (bento) ================= */
+    .products { background: var(--color-surface); border-block: 1px solid var(--color-border); }
+    .bento { display: grid; gap: 14px; }
+    .card {
+      position: relative; overflow: hidden;
+      background: var(--mint-50); border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg); padding: 26px 22px;
+      display: flex; flex-direction: column; gap: 12px;
+      transition: border-color var(--ease), box-shadow var(--ease), background-color var(--ease);
+    }
+    .card:hover { border-color: var(--green-400); box-shadow: var(--shadow); background: var(--white); }
+    .card__icon { width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; background: var(--white); color: var(--green-800); border: 1px solid var(--color-border); }
+    .card__icon svg { width: 26px; height: 26px; }
+    .card h3 { font-size: 1.3125rem; margin-top: 4px; }
+    .card p { color: var(--color-muted); }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; padding-top: 8px; }
+    .chips li { font-size: 0.8125rem; font-weight: 500; padding: 4px 12px; border-radius: 999px; background: var(--white); border: 1px solid var(--color-border); color: var(--green-800); }
+    .card__bg { position: absolute; right: -24px; bottom: -24px; width: 160px; height: 160px; color: var(--green-500); opacity: 0.1; pointer-events: none; }
+
+    .card--feature {
+      background: linear-gradient(150deg, var(--green-400) 0%, var(--green-600) 100%);
+      border-color: transparent; color: var(--forest-950);
+    }
+    .card--feature:hover { background: linear-gradient(150deg, var(--green-400) 0%, var(--green-600) 100%); border-color: transparent; }
+    .card--feature p { color: rgba(8,31,22,0.8); }
+    .card--feature .card__icon { background: var(--forest-900); color: var(--green-300); border: 0; }
+    .card--feature .chips li { background: rgba(255,255,255,0.3); border-color: rgba(8,31,22,0.12); color: var(--forest-950); }
+    .card--feature .card__bg { color: var(--forest-950); opacity: 0.1; width: 240px; height: 240px; }
+    .card--feature h3 { font-size: clamp(1.5rem, 5vw, 2rem); }
+
+    /* ================= Why us ================= */
+    .why { background: var(--forest-900); color: var(--white); position: relative; overflow: hidden; }
+    .why::before {
+      content: ""; position: absolute; width: 600px; height: 600px; left: -300px; bottom: -300px;
+      background: radial-gradient(circle, rgba(95,181,126,0.22), transparent 65%);
+    }
+    .why .container { position: relative; }
+    .why .tag { color: var(--green-300); }
+    .why .section__head p { color: var(--on-dark-muted); }
+    .why__grid { display: grid; gap: 40px; }
+    .reasons { display: grid; gap: 14px; }
+    .reason {
+      padding: 26px 22px; border-radius: var(--radius-lg);
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.09);
+      transition: background-color var(--ease), border-color var(--ease);
+    }
+    .reason:hover { background: rgba(95,181,126,0.08); border-color: rgba(95,181,126,0.4); }
+    .reason__top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+    .reason__icon { width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; background: rgba(95,181,126,0.16); color: var(--green-400); }
+    .reason__icon svg { width: 24px; height: 24px; }
+    .reason__num { font-size: 0.875rem; font-weight: 600; color: rgba(255,255,255,0.35); }
+    .reason h3 { font-size: 1.1875rem; margin-bottom: 8px; }
+    .reason p { color: var(--on-dark-muted); }
+
+    /* ================= Steps ================= */
+    .steps { display: grid; gap: 14px; counter-reset: step; }
+    .step {
+      position: relative; background: var(--color-surface); border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg); padding: 26px 22px 26px 84px; box-shadow: var(--shadow-sm);
+    }
+    .step::before {
+      counter-increment: step; content: counter(step);
+      position: absolute; left: 22px; top: 24px;
+      width: 44px; height: 44px; border-radius: 50%;
+      display: grid; place-items: center;
+      background: var(--green-500); color: var(--forest-950); font-weight: 700; font-size: 1.125rem;
+      box-shadow: 0 0 0 6px var(--mint-100);
+    }
+    .step h3 { font-size: 1.1875rem; margin-bottom: 6px; }
+    .step p { color: var(--color-muted); }
+
+    /* ================= Contact ================= */
+    .contact__card {
+      display: grid; background: var(--color-surface); border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow);
+    }
+    .contact__info { padding: 28px 22px; }
+    .contact__info h2 { font-size: clamp(1.75rem, 6.5vw, 2.5rem); margin: 14px 0 8px; }
+    .contact__info > p { color: var(--color-muted); margin-bottom: 20px; }
+    .contact__item {
+      display: flex; align-items: center; gap: 16px;
+      min-height: 72px; padding: 12px 0; border-bottom: 1px solid var(--color-border);
+      transition: color var(--ease);
+    }
+    .contact__item:last-of-type { border-bottom: 0; }
+    a.contact__item:hover { color: var(--color-accent-text); }
+    a.contact__item:hover .contact__icon { background: var(--green-500); color: var(--forest-950); }
+    .contact__icon { width: 46px; height: 46px; flex: none; display: grid; place-items: center; background: var(--mint-100); border-radius: 12px; color: var(--green-800); transition: background-color var(--ease), color var(--ease); }
+    .contact__icon svg { width: 20px; height: 20px; }
+    .contact__item small { display: block; font-size: 0.8125rem; color: var(--color-muted); }
+    .contact__item span { font-weight: 600; font-size: 1.0625rem; overflow-wrap: anywhere; }
+    .contact__actions { display: grid; gap: 10px; margin-top: 24px; }
+    .map-wrap { position: relative; min-height: 320px; background: var(--mint-100); }
+    .map-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; filter: saturate(0.85) hue-rotate(-8deg); }
+
+    /* ================= CTA ================= */
+    .cta { padding: 0 0 80px; }
+    .cta__box {
+      position: relative; overflow: hidden;
+      border-radius: var(--radius-lg); padding: 40px 24px;
+      background: linear-gradient(135deg, var(--green-400), var(--green-600));
+      color: var(--forest-950); display: grid; gap: 24px;
+    }
+    .cta__box::after {
+      content: ""; position: absolute; right: -80px; top: -80px; width: 280px; height: 280px; border-radius: 50%;
+      border: 1px solid rgba(8,31,22,0.15); box-shadow: 0 0 0 36px rgba(255,255,255,0.06), 0 0 0 37px rgba(8,31,22,0.1), 0 0 0 74px rgba(255,255,255,0.04), 0 0 0 75px rgba(8,31,22,0.07);
+    }
+    .cta__box > * { position: relative; z-index: 1; }
+    .cta h2 { font-size: clamp(1.625rem, 6vw, 2.5rem); max-width: 20ch; }
+    .cta p { color: rgba(8,31,22,0.78); margin-top: 10px; max-width: 46ch; }
+    .cta__actions { display: grid; gap: 10px; }
+
+    /* ================= Footer ================= */
+    .footer { background: var(--forest-950); color: var(--on-dark-muted); padding: 56px 0 28px; font-size: 0.9375rem; }
+    .footer__grid { display: grid; gap: 36px; padding-bottom: 36px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .footer .brand { color: var(--white); }
+    .footer__about { margin-top: 14px; max-width: 34ch; }
+    .footer h4 { color: var(--white); font-size: 0.9375rem; font-weight: 700; margin-bottom: 12px; }
+    .footer li a, .footer li span { display: inline-flex; min-height: 36px; align-items: center; transition: color var(--ease); }
+    .footer li a:hover { color: var(--green-400); }
+    .footer__bottom { padding-top: 24px; font-size: 0.875rem; }
+
+    /* Floating call button (mobile) */
+    .fab {
+      position: fixed; right: 16px; bottom: 16px; z-index: var(--z-fab);
+      width: 58px; height: 58px; border-radius: 50%;
+      display: grid; place-items: center;
+      background: var(--green-500); color: var(--forest-950);
+      box-shadow: 0 10px 30px rgba(8,31,22,0.35);
+      transition: transform var(--ease), opacity var(--ease);
+    }
+    .fab svg { width: 24px; height: 24px; }
+    .fab.is-hidden { opacity: 0; transform: translateY(16px); pointer-events: none; }
+
+    /* Reveal */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 700ms ease, transform 700ms cubic-bezier(.2,.7,.3,1); }
+    .reveal.is-visible { opacity: 1; transform: none; }
+
+    /* ================= 480 ================= */
+    @media (min-width: 480px) {
+      .btn { width: auto; }
+      .hero__actions, .contact__actions, .cta__actions { display: flex; flex-wrap: wrap; }
+      .trust__item { padding: 24px 20px; }
+      .trust__item p { display: block; }
+      .float { font-size: 0.875rem; }
+    }
+
+    /* ================= 768 ================= */
+    @media (min-width: 768px) {
+      :root { --gutter: 32px; --nav-h: 76px; }
+      .section { padding: 112px 0; }
+      .hero { padding: calc(var(--nav-h) + 64px) 0 150px; }
+      .trust { margin-top: -84px; }
+      .trust__card { grid-template-columns: repeat(4, 1fr); }
+      .trust__item { padding: 28px 24px; }
+      .trust__item:nth-child(odd) { border-right: 0; }
+      .trust__item:nth-child(-n+2) { border-bottom: 0; }
+      .trust__item:not(:last-child) { border-right: 1px solid var(--color-border); }
+
+      .bento { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+      .card--feature, .card--half, .card--wide { grid-column: 1 / -1; }
+      .card { padding: 32px 28px; }
+      .card--wide { flex-direction: row; align-items: center; gap: 24px; }
+      .card--wide .chips { margin: 0 0 0 auto; padding: 0; justify-content: flex-end; max-width: 320px; }
+
+      .reasons { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+      .steps { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+      .step { padding: 92px 26px 28px; }
+      .step::before { top: 28px; left: 26px; }
+
+      .contact__info { padding: 44px 40px; }
+      .cta__box { padding: 56px 48px; grid-template-columns: 1fr auto; align-items: center; }
+      .cta__actions { flex-direction: column; align-items: stretch; }
+
+      .footer__grid { grid-template-columns: 1.5fr 1fr 1fr; }
+    }
+
+    /* ================= 1024 ================= */
+    @media (min-width: 1024px) {
+      .nav__toggle, .mobile-menu { display: none; }
+      .nav__links { display: flex; align-items: center; gap: 8px; font-size: 0.9375rem; font-weight: 500; }
+      .nav__links a:not(.btn) { padding: 10px 14px; border-radius: 999px; color: rgba(255,255,255,0.82); transition: color var(--ease), background-color var(--ease); }
+      .nav__links a:not(.btn):hover { color: var(--white); background: rgba(255,255,255,0.08); }
+      .nav__links .btn { min-height: 44px; padding: 0 20px; margin-left: 12px; }
+
+      .hero__grid { grid-template-columns: 1.05fr 1fr; gap: 56px; }
+      .float--a { left: -28px; }
+      .float--b { right: -16px; }
+
+      .about__grid { grid-template-columns: 1.3fr 1fr; gap: 72px; align-items: center; }
+
+      .bento { grid-template-columns: repeat(4, 1fr); }
+      .card--feature { grid-column: span 2; grid-row: span 2; padding: 40px 36px; }
+      .card--half { grid-column: span 2; }
+      .card--wide { grid-column: 1 / -1; }
+
+      .why__grid { grid-template-columns: 0.9fr 1.4fr; gap: 64px; align-items: start; }
+      .why .section__head { position: sticky; top: calc(var(--nav-h) + 40px); }
+
+      .contact__card { grid-template-columns: 1fr 1.15fr; }
+      .map-wrap { min-height: 100%; }
+
+      .footer__grid { grid-template-columns: 1.6fr 1fr 1fr 1fr; }
+      .fab { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition-duration: 0.01ms !important; animation: none !important; }
+      .reveal { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================= Nav ================= -->
+  <header class="nav" id="nav">
+    <div class="container nav__inner">
+      <a href="#top" class="brand" aria-label="თედო ჰოლდინგი — მთავარი">
+        
+        <span>თედო <b>ჰოლდინგი</b></span>
+      </a>
+
+      <nav class="nav__links" aria-label="მთავარი მენიუ">
+        <a href="#about">ჩვენ შესახებ</a>
+        <a href="#products">პროდუქცია</a>
+        <a href="#why">უპირატესობები</a>
+        <a href="#contact">კონტაქტი</a>
+        <a href="tel:+995599304456" class="btn btn--green">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg>
+          599 30 44 56
+        </a>
+      </nav>
+
+      <button class="nav__toggle" id="navToggle" aria-label="მენიუს გახსნა" aria-expanded="false" aria-controls="mobileMenu">
+        <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg>
+        <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+  </header>
+  <nav class="mobile-menu" id="mobileMenu" aria-label="მობილური მენიუ">
+    <a href="#about">ჩვენ შესახებ</a>
+    <a href="#products">პროდუქცია</a>
+    <a href="#why">უპირატესობები</a>
+    <a href="#contact">კონტაქტი</a>
+    <div class="mobile-menu__foot">
+      <a href="tel:+995599304456" class="btn btn--green">დარეკვა: 599 30 44 56</a>
+      <p>სამუშაო საათები: 09:00 – 20:00</p>
+    </div>
+  </nav>
+
+  <main id="top">
+
+    <!-- ================= Hero ================= -->
+    <section class="hero">
+      <div class="container hero__grid">
+        <div>
+          <span class="pill">
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></span>
+            ტექნიკის მაღაზია თბილისში
+          </span>
+          <h1>თანამედროვე ტექნიკა <em>ერთ სივრცეში.</em></h1>
+          <p class="hero__lead">კომპიუტერები, ლეპტოპები, მობილური ტელეფონები და აქსესუარები წამყვანი მწარმოებლებისგან — სანდო ხარისხით და პროფესიონალური კონსულტაციით.</p>
+
+          <div class="hero__actions">
+            <a href="#products" class="btn btn--green">
+              პროდუქციის ნახვა
+              <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+            <a href="#contact" class="btn btn--ghost">დაგვიკავშირდით</a>
+          </div>
+
+          <ul class="hero__meta">
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+              09:00 – 20:00
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.1-7-11a7 7 0 1 1 14 0c0 4.9-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+              გიორგი წაბაძის ქ. 7
+            </li>
+          </ul>
+        </div>
+
+        <!-- Device illustration (pure SVG, no images to load) -->
+        <div class="visual" aria-hidden="true">
+          <svg class="devices" viewBox="0 0 560 440" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="scr" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#1B5A3D"/><stop offset="1" stop-color="#0E3424"/>
+              </linearGradient>
+              <linearGradient id="acc" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#8FD1A5"/><stop offset="1" stop-color="#4A9E69"/>
+              </linearGradient>
+              <linearGradient id="base" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#E9F3EC"/><stop offset="1" stop-color="#B9D3C2"/>
+              </linearGradient>
+            </defs>
+
+            <!-- Laptop -->
+            <rect x="40" y="38" width="400" height="262" rx="16" fill="#E9F3EC"/>
+            <rect x="52" y="50" width="376" height="238" rx="8" fill="url(#scr)"/>
+            <!-- screen UI -->
+            <circle cx="70" cy="66" r="4" fill="#5FB57E"/><circle cx="84" cy="66" r="4" fill="#5FB57E" opacity=".5"/><circle cx="98" cy="66" r="4" fill="#5FB57E" opacity=".25"/>
+            <rect x="68" y="84" width="96" height="188" rx="8" fill="#FFFFFF" opacity=".06"/>
+            <rect x="80" y="100" width="64" height="8" rx="4" fill="#8FD1A5" opacity=".8"/>
+            <rect x="80" y="120" width="52" height="6" rx="3" fill="#FFFFFF" opacity=".25"/>
+            <rect x="80" y="136" width="60" height="6" rx="3" fill="#FFFFFF" opacity=".25"/>
+            <rect x="80" y="152" width="44" height="6" rx="3" fill="#FFFFFF" opacity=".25"/>
+            <rect x="176" y="84" width="236" height="104" rx="10" fill="url(#acc)"/>
+            <rect x="194" y="104" width="110" height="10" rx="5" fill="#0C2E20" opacity=".7"/>
+            <rect x="194" y="124" width="76" height="8" rx="4" fill="#0C2E20" opacity=".35"/>
+            <rect x="194" y="154" width="64" height="20" rx="10" fill="#0C2E20"/>
+            <rect x="176" y="200" width="112" height="72" rx="10" fill="#FFFFFF" opacity=".08"/>
+            <rect x="300" y="200" width="112" height="72" rx="10" fill="#FFFFFF" opacity=".08"/>
+            <rect x="190" y="248" width="10" height="14" rx="2" fill="#5FB57E"/><rect x="206" y="236" width="10" height="26" rx="2" fill="#5FB57E"/><rect x="222" y="226" width="10" height="36" rx="2" fill="#8FD1A5"/><rect x="238" y="240" width="10" height="22" rx="2" fill="#5FB57E"/><rect x="254" y="218" width="10" height="44" rx="2" fill="#8FD1A5"/>
+            <circle cx="356" cy="236" r="22" stroke="#FFFFFF" stroke-opacity=".15" stroke-width="7"/>
+            <path d="M356 214a22 22 0 0 1 21 28" stroke="#8FD1A5" stroke-width="7" stroke-linecap="round"/>
+            <!-- base -->
+            <path d="M14 304h452l-14 22a12 12 0 0 1-10 6H38a12 12 0 0 1-10-6l-14-22z" fill="url(#base)"/>
+            <rect x="200" y="304" width="80" height="7" rx="3.5" fill="#9CBFA9"/>
+
+            <!-- Phone -->
+            <rect x="388" y="120" width="140" height="282" rx="26" fill="#081F16" stroke="#5FB57E" stroke-opacity=".5" stroke-width="2"/>
+            <rect x="398" y="130" width="120" height="262" rx="18" fill="url(#scr)"/>
+            <rect x="436" y="138" width="44" height="10" rx="5" fill="#081F16"/>
+            <rect x="410" y="164" width="96" height="120" rx="14" fill="url(#acc)"/>
+            <circle cx="458" cy="214" r="24" fill="#0C2E20" opacity=".85"/>
+            <path d="M448 214l7 7 13-14" stroke="#8FD1A5" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+            <rect x="426" y="256" width="64" height="8" rx="4" fill="#0C2E20" opacity=".55"/>
+            <rect x="410" y="298" width="96" height="12" rx="6" fill="#FFFFFF" opacity=".2"/>
+            <rect x="410" y="318" width="70" height="10" rx="5" fill="#FFFFFF" opacity=".12"/>
+            <rect x="410" y="350" width="96" height="28" rx="14" fill="#5FB57E"/>
+            <rect x="438" y="361" width="40" height="6" rx="3" fill="#0C2E20" opacity=".7"/>
+          </svg>
+
+          <div class="float float--a">
+            <span class="float__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6l8-3z"/><path d="M9 12l2 2 4-4"/></svg></span>
+            <span>გარანტია<small>ყველა პროდუქტზე</small></span>
+          </div>
+          <div class="float float--b">
+            <span class="float__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg></span>
+            <span>100% ორიგინალი<small>სანდო მომწოდებლები</small></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Trust strip ================= -->
+    <div class="trust">
+      <div class="container">
+        <ul class="trust__card">
+          <li class="trust__item">
+            <span class="trust__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg></span>
+            <h3>ორიგინალი პროდუქცია</h3>
+            <p>მხოლოდ სანდო მომწოდებლებისგან</p>
+          </li>
+          <li class="trust__item">
+            <span class="trust__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6l8-3z"/><path d="M9 12l2 2 4-4"/></svg></span>
+            <h3>გარანტია</h3>
+            <p>სერვისული მხარდაჭერა შეძენის შემდეგ</p>
+          </li>
+          <li class="trust__item">
+            <span class="trust__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M9 10h6M9 14h4"/></svg></span>
+            <h3>კონსულტაცია</h3>
+            <p>გირჩევთ საჭიროებისა და ბიუჯეტის მიხედვით</p>
+          </li>
+          <li class="trust__item">
+            <span class="trust__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg></span>
+            <h3>მიწოდება</h3>
+            <p>თბილისში და საქართველოს რეგიონებში</p>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ================= About ================= -->
+    <section class="section" id="about">
+      <div class="container about__grid">
+        <div class="reveal">
+          <div class="section__head">
+            <span class="tag">ჩვენ შესახებ</span>
+            <h2>ვყიდით სანდო ტექნიკას და გეხმარებით სწორ არჩევანში.</h2>
+          </div>
+          <div class="about__text">
+            <p><strong>თედო ჰოლდინგი</strong> არის ქართული კომპანია, რომელიც ფიზიკურ და იურიდიულ პირებს აწვდის კომპიუტერულ და მობილურ ტექნიკას — ყოველდღიური გამოყენების მოწყობილობებიდან ძლიერ სამუშაო კომპიუტერებამდე.</p>
+            <p>თითოეულ მომხმარებელს ვუთმობთ დროს: გირჩევთ მოწყობილობას თქვენი საჭიროებისა და ბიუჯეტის მიხედვით და გვერდში გიდგავართ შეძენის შემდეგაც.</p>
+          </div>
+        </div>
+
+        <aside class="facts reveal" aria-label="მოკლე ინფორმაცია">
+          <h3>მოკლედ ჩვენ შესახებ</h3>
+          <ul>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M8 20h8M12 16v4"/></svg>
+              <div><small>საქმიანობა</small><span>კომპიუტერული და მობილური ტექნიკა</span></div>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 20v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M21 20v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg>
+              <div><small>მომხმარებლები</small><span>ფიზიკური და იურიდიული პირები</span></div>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.1-7-11a7 7 0 1 1 14 0c0 4.9-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+              <div><small>მისამართი</small><span>გიორგი წაბაძის ქ. 7, თბილისი</span></div>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+              <div><small>სამუშაო საათები</small><span>09:00 – 20:00</span></div>
+            </li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ================= Products ================= -->
+    <section class="section products" id="products">
+      <div class="container">
+        <div class="section__head reveal">
+          <span class="tag">პროდუქცია</span>
+          <h2>ტექნიკა ყველა საჭიროებისთვის.</h2>
+          <p>სამსახურისთვის, სწავლისთვის თუ გართობისთვის — ჩვენთან იპოვით სწორ მოწყობილობას.</p>
+        </div>
+
+        <div class="bento">
+          <article class="card card--feature reveal">
+            <span class="card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M8 20h8M12 16v4"/></svg></span>
+            <h3>კომპიუტერები</h3>
+            <p>საოფისე, სამუშაო და სათამაშო კომპიუტერები — მზა კონფიგურაციით ან ინდივიდუალური აწყობით, ზუსტად თქვენს ამოცანებზე მორგებული.</p>
+            <ul class="chips"><li>საოფისე</li><li>სათამაშო</li><li>სამუშაო სადგური</li><li>ინდივიდუალური აწყობა</li></ul>
+            <svg class="card__bg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M8 20h8M12 16v4"/></svg>
+          </article>
+
+          <article class="card card--half reveal">
+            <span class="card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="10" rx="1.5"/><path d="M2 19h20"/></svg></span>
+            <h3>ლეპტოპები</h3>
+            <p>მსუბუქი ულტრაბუქები, ბიზნეს და სათამაშო ლეპტოპები ნებისმიერი ამოცანისთვის.</p>
+            <svg class="card__bg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><rect x="4" y="5" width="16" height="10" rx="1.5"/><path d="M2 19h20"/></svg>
+          </article>
+
+          <article class="card reveal">
+            <span class="card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg></span>
+            <h3>ტელეფონები</h3>
+            <p>უახლესი სმარტფონები წამყვანი ბრენდებისგან.</p>
+          </article>
+
+          <article class="card reveal">
+            <span class="card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M11 17h2"/></svg></span>
+            <h3>პლანშეტები</h3>
+            <p>პლანშეტები, სმარტ საათები და გაჯეტები.</p>
+          </article>
+
+          <article class="card card--wide reveal">
+            <span class="card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 14v-2a9 9 0 0 1 18 0v2"/><rect x="3" y="14" width="4" height="7" rx="1.5"/><rect x="17" y="14" width="4" height="7" rx="1.5"/></svg></span>
+            <div>
+              <h3>აქსესუარები</h3>
+              <p>ყველაფერი, რაც თქვენს მოწყობილობას სჭირდება.</p>
+            </div>
+            <ul class="chips"><li>მონიტორები</li><li>კლავიატურები</li><li>მაუსები</li><li>ყურსასმენები</li><li>დამტენები</li></ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Why us ================= -->
+    <section class="section why" id="why">
+      <div class="container why__grid">
+        <div class="section__head reveal">
+          <span class="tag">უპირატესობები</span>
+          <h2>რატომ გვირჩევენ მომხმარებლები.</h2>
+          <p>ტექნიკის შეძენა მარტივი და უსაფრთხო უნდა იყოს. სწორედ ამიტომ ვზრუნავთ თითოეულ დეტალზე.</p>
+        </div>
+        <div class="reasons">
+          <article class="reason reveal">
+            <div class="reason__top">
+              <span class="reason__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg></span>
+              <span class="reason__num">01</span>
+            </div>
+            <h3>ორიგინალი პროდუქცია</h3>
+            <p>ვთანამშრომლობთ მხოლოდ სანდო მომწოდებლებთან — ყველა მოწყობილობა ორიგინალია.</p>
+          </article>
+          <article class="reason reveal">
+            <div class="reason__top">
+              <span class="reason__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6l8-3z"/><path d="M9 12l2 2 4-4"/></svg></span>
+              <span class="reason__num">02</span>
+            </div>
+            <h3>გარანტია</h3>
+            <p>ყველა პროდუქტზე ვრცელდება გარანტია და სერვისული მხარდაჭერა.</p>
+          </article>
+          <article class="reason reveal">
+            <div class="reason__top">
+              <span class="reason__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M9 10h6M9 14h4"/></svg></span>
+              <span class="reason__num">03</span>
+            </div>
+            <h3>პროფესიონალური კონსულტაცია</h3>
+            <p>დაგეხმარებით შეარჩიოთ ტექნიკა, რომელიც ზუსტად თქვენ გჭირდებათ.</p>
+          </article>
+          <article class="reason reveal">
+            <div class="reason__top">
+              <span class="reason__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg></span>
+              <span class="reason__num">04</span>
+            </div>
+            <h3>სწრაფი მიწოდება</h3>
+            <p>მიწოდება თბილისში და საქართველოს რეგიონებში.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Steps ================= -->
+    <section class="section" id="how">
+      <div class="container">
+        <div class="section__head reveal">
+          <span class="tag">როგორ შევიძინოთ</span>
+          <h2>სამი მარტივი ნაბიჯი.</h2>
+        </div>
+        <ol class="steps">
+          <li class="step reveal">
+            <h3>დაგვიკავშირდით</h3>
+            <p>დაგვირეკეთ, მოგვწერეთ ან გვეწვიეთ მაღაზიაში.</p>
+          </li>
+          <li class="step reveal">
+            <h3>მიიღეთ კონსულტაცია</h3>
+            <p>ერთად შევარჩევთ თქვენთვის საუკეთესო ვარიანტს.</p>
+          </li>
+          <li class="step reveal">
+            <h3>მიიღეთ ტექნიკა</h3>
+            <p>წაიღეთ მაღაზიიდან ან ისარგებლეთ მიწოდებით.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ================= Contact ================= -->
+    <section class="section" id="contact" style="padding-top:0">
+      <div class="container">
+        <div class="contact__card reveal">
+          <div class="contact__info">
+            <span class="tag">კონტაქტი</span>
+            <h2>დაგვიკავშირდით.</h2>
+            <p>სიამოვნებით გიპასუხებთ ნებისმიერ შეკითხვაზე.</p>
+
+            <a class="contact__item" href="tel:+995599304456">
+              <span class="contact__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg></span>
+              <div><small>ტელეფონი</small><span>+995 599 30 44 56</span></div>
+            </a>
+            <a class="contact__item" href="mailto:celqiholdingi@gmail.com">
+              <span class="contact__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span>
+              <div><small>ელ. ფოსტა</small><span>celqiholdingi@gmail.com</span></div>
+            </a>
+            <a class="contact__item" href="https://www.google.com/maps/search/?api=1&amp;query=41.724306,44.792028" target="_blank" rel="noopener">
+              <span class="contact__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.1-7-11a7 7 0 1 1 14 0c0 4.9-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
+              <div><small>მისამართი</small><span>გიორგი წაბაძის ქ. 7, თბილისი</span></div>
+            </a>
+            <div class="contact__item">
+              <span class="contact__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+              <div><small>სამუშაო საათები</small><span>09:00 – 20:00</span></div>
+            </div>
+
+            <div class="contact__actions">
+              <a href="tel:+995599304456" class="btn btn--dark">დარეკვა</a>
+              <a href="https://www.google.com/maps/dir/?api=1&amp;destination=41.724306,44.792028" target="_blank" rel="noopener" class="btn btn--outline">
+                მარშრუტი
+                <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg>
+              </a>
+            </div>
+          </div>
+          <div class="map-wrap">
+            <iframe title="თედო ჰოლდინგის მდებარეობა რუკაზე — გიორგი წაბაძის ქ. 7, თბილისი"
+              src="https://www.google.com/maps?q=41.724306,44.792028&amp;z=17&amp;hl=ka&amp;output=embed"
+              loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CTA ================= -->
+    <section class="cta" aria-label="კონსულტაცია">
+      <div class="container">
+        <div class="cta__box reveal">
+          <div>
+            <h2>გჭირდებათ რჩევა ტექნიკის შერჩევაში?</h2>
+            <p>დაგვირეკეთ — ჩვენი კონსულტანტი დაგეხმარებათ სწორი მოწყობილობის არჩევაში.</p>
+          </div>
+          <div class="cta__actions">
+            <a href="tel:+995599304456" class="btn btn--dark">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg>
+              +995 599 30 44 56
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= Footer ================= -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div>
+          <a href="#top" class="brand"><span>თედო <b>ჰოლდინგი</b></span></a>
+          <p class="footer__about">კომპიუტერული და მობილური ტექნიკა თბილისში — სანდო ხარისხით და პროფესიონალური მომსახურებით.</p>
+        </div>
+        <div>
+          <h4>ნავიგაცია</h4>
+          <ul>
+            <li><a href="#about">ჩვენ შესახებ</a></li>
+            <li><a href="#products">პროდუქცია</a></li>
+            <li><a href="#why">უპირატესობები</a></li>
+            <li><a href="#contact">კონტაქტი</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>კონტაქტი</h4>
+          <ul>
+            <li><a href="tel:+995599304456">+995 599 30 44 56</a></li>
+            <li><a href="mailto:celqiholdingi@gmail.com">celqiholdingi@gmail.com</a></li>
+            <li><a href="https://www.google.com/maps/search/?api=1&amp;query=41.724306,44.792028" target="_blank" rel="noopener">გიორგი წაბაძის ქ. 7</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>სამუშაო საათები</h4>
+          <ul><li><span>09:00 – 20:00</span></li></ul>
+        </div>
+      </div>
+      <p class="footer__bottom">&copy; <span id="year">2026</span> თედო ჰოლდინგი. ყველა უფლება დაცულია.</p>
+    </div>
+  </footer>
+
+  <!-- Floating call button (mobile only) -->
+  <a href="tel:+995599304456" class="fab is-hidden" id="fab" aria-label="დარეკვა: +995 599 30 44 56">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg>
+  </a>
+
+  <script>
+    const nav = document.getElementById('nav');
+    const toggle = document.getElementById('navToggle');
+    const menu = document.getElementById('mobileMenu');
+    const fab = document.getElementById('fab');
+
+    function setMenu(open) {
+      nav.classList.toggle('is-open', open);
+      toggle.setAttribute('aria-expanded', open);
+      toggle.setAttribute('aria-label', open ? 'მენიუს დახურვა' : 'მენიუს გახსნა');
+      document.body.style.overflow = open ? 'hidden' : '';
+    }
+    toggle.addEventListener('click', () => setMenu(!nav.classList.contains('is-open')));
+    menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setMenu(false)));
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') setMenu(false); });
+
+    // Solid nav + show call button once past the hero
+    const onScroll = () => {
+      const y = window.scrollY;
+      nav.classList.toggle('is-scrolled', y > 10);
+      fab.classList.toggle('is-hidden', y < window.innerHeight * 0.6);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    // Scroll reveal
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); } });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
